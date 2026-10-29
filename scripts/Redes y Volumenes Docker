@@ -13,3 +13,44 @@ CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS
 e92aa857a172   nginx             "/docker-entrypoint.…"   6 minutes ago   Up 6 minutes   0.0.0.0:8082->80/tcp, [::]:8082->80/tcp   nginx-red
 2eaba7277e98   servidor-grupo7   "/docker-entrypoint.…"   4 hours ago     Up 4 hours     0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   nginx-personalizado
 1bcd1ded0303   nginx:latest      "/docker-entrypoint.…"   5 hours ago     Up 5 hours     0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   nginx-basico
+
+adminsys@servidor-grupo7:~$ docker volume create volumen-web
+volumen-web
+adminsys@servidor-grupo7:~$ docker volumen ls
+docker: unknown command: docker volumen
+
+Run 'docker --help' for more information
+adminsys@servidor-grupo7:~$ docker volume ls
+DRIVER    VOLUME NAME
+local     volumen-web
+adminsys@servidor-grupo7:~$ docker run -d --name nginx-volumen -p 8083:80 -v volumen-web:/usr/share/nginx/html nginx
+ec248339b7b4ae67b608c60cbbeb23668194104457c1e0f511d9debf2a7dc5ac
+adminsys@servidor-grupo7:~$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED              STATUS              PORTS                                     NAMES
+ec248339b7b4   nginx             "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8083->80/tcp, [::]:8083->80/tcp   nginx-volumen
+e92aa857a172   nginx             "/docker-entrypoint.…"   33 minutes ago       Up 33 minutes       0.0.0.0:8082->80/tcp, [::]:8082->80/tcp   nginx-red
+2eaba7277e98   servidor-grupo7   "/docker-entrypoint.…"   5 hours ago          Up 5 hours          0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   nginx-personalizado
+1bcd1ded0303   nginx:latest      "/docker-entrypoint.…"   5 hours ago          Up 5 hours          0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   nginx-basico
+adminsys@servidor-grupo7:~$ docker exec nginx-volumen sh -c 'echo "<h1>Contenido persistente de Docker</h1>" > /usr/share/nginx/html/index.html'
+adminsys@servidor-grupo7:~$ curl http://localhost:8083
+<h1>Contenido persistente de Docker</h1>
+adminsys@servidor-grupo7:~$ docker rm -f nginx-volumen
+nginx-volumen
+adminsys@servidor-grupo7:~$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS          PORTS                                     NAMES
+e92aa857a172   nginx             "/docker-entrypoint.…"   38 minutes ago   Up 38 minutes   0.0.0.0:8082->80/tcp, [::]:8082->80/tcp   nginx-red
+2eaba7277e98   servidor-grupo7   "/docker-entrypoint.…"   5 hours ago      Up 5 hours      0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   nginx-personalizado
+1bcd1ded0303   nginx:latest      "/docker-entrypoint.…"   5 hours ago      Up 5 hours      0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   nginx-basico
+adminsys@servidor-grupo7:~$ curl http://localhost:8083
+curl: (7) Failed to connect to localhost port 8083 after 0 ms: Couldn't connect to server
+adminsys@servidor-grupo7:~$ docker run -d --name nginx-volumen-nuevo -p 8083:80 -v volumen-web:/usr/share/nginx/html nginx
+254647bbc7ecc6b3e00a54f01eb97f05b801e6d390d56e02c6c47f0b7ad4de8a
+adminsys@servidor-grupo7:~$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS          PORTS                                     NAMES
+254647bbc7ec   nginx             "/docker-entrypoint.…"   21 seconds ago   Up 20 seconds   0.0.0.0:8083->80/tcp, [::]:8083->80/tcp   nginx-volumen-nuevo
+e92aa857a172   nginx             "/docker-entrypoint.…"   41 minutes ago   Up 41 minutes   0.0.0.0:8082->80/tcp, [::]:8082->80/tcp   nginx-red
+2eaba7277e98   servidor-grupo7   "/docker-entrypoint.…"   5 hours ago      Up 5 hours      0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   nginx-personalizado
+1bcd1ded0303   nginx:latest      "/docker-entrypoint.…"   5 hours ago      Up 5 hours      0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   nginx-basico
+adminsys@servidor-grupo7:~$ curl http://localhost:8083
+<h1>Contenido persistente de Docker</h1>
+adminsys@servidor-grupo7:~$ 
