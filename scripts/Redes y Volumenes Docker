@@ -1,1 +1,15 @@
-
+adminsys@servidor-grupo7:~$ docker network create red-proyecto
+660fbe3455489d3c24a7cebc14ac2c49072c42cdd72a1c8b81dd56bdb1aeadf4
+adminsys@servidor-grupo7:~$ docker network ls
+NETWORK ID     NAME           DRIVER    SCOPE
+9fdeae213d3f   bridge         bridge    local
+dd80e9afe0dd   host           host      local
+f5138e3b2864   none           null      local
+660fbe345548   red-proyecto   bridge    local
+adminsys@servidor-grupo7:~$ docker run -d --name nginx-red --network red-proyecto -p 8082:80 nginx
+e92aa857a1727859730f83e13ac85b903cf37635e1c8fb8a5f5496c34c03c7f2
+adminsys@servidor-grupo7:~$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+e92aa857a172   nginx             "/docker-entrypoint.…"   6 minutes ago   Up 6 minutes   0.0.0.0:8082->80/tcp, [::]:8082->80/tcp   nginx-red
+2eaba7277e98   servidor-grupo7   "/docker-entrypoint.…"   4 hours ago     Up 4 hours     0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   nginx-personalizado
+1bcd1ded0303   nginx:latest      "/docker-entrypoint.…"   5 hours ago     Up 5 hours     0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   nginx-basico
