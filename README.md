@@ -11,7 +11,6 @@ Este repositorio contiene la configuración, scripts de automatización y docume
 | Jehosua Abdiel Cañas Tijerino| CT24001|
 | Vanesa Gabriela Arevalo Elias | AE25016 |
 | Carlos Alberto Narváez Morán| NM25012|
-| Gerson Antonio Chámul Ramírez | CR25082 |
 | Joseline Rosibel Aldana Aldana| AA13081|
 
 ---
