@@ -1,0 +1,81 @@
+adminsys@servidor-grupo7:~$ docker run -d --name alpine-pruebas --network red-proyecto alpine sh -c 'while true; do sleep 3600; done'
+Unable to find image 'alpine:latest' locally
+latest: Pulling from library/alpine
+7b229517ed22: Pull complete 
+3da1513d2124: Download complete 
+3ec36f3670df: Download complete 
+Digest: sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
+Status: Downloaded newer image for alpine:latest
+f833b8553c72bfeb544aa0a2ba0c645956e48bd6a87c9d3abd91551ee434e76c
+adminsys@servidor-grupo7:~$ docker network inspect red-proyecto
+[
+    {
+        "Name": "red-proyecto",
+        "Id": "660fbe3455489d3c24a7cebc14ac2c49072c42cdd72a1c8b81dd56bdb1aeadf4",
+        "Created": "2026-10-29T09:42:51.164121506Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "IPRange": "",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Options": {},
+        "Labels": {},
+        "Containers": {
+            "e92aa857a1727859730f83e13ac85b903cf37635e1c8fb8a5f5496c34c03c7f2": {
+                "Name": "nginx-red",
+                "EndpointID": "27b643c794e0138e02c72551495cb9a95e1c3737e650ba83795273957d368bca",
+                "MacAddress": "ee:d2:8a:88:ef:98",
+                "IPv4Address": "172.18.0.2/16",
+                "IPv6Address": ""
+            },
+            "f833b8553c72bfeb544aa0a2ba0c645956e48bd6a87c9d3abd91551ee434e76c": {
+                "Name": "alpine-pruebas",
+                "EndpointID": "ff14f8e06fe51348b879f57ff6a81ee0ae2e74e75a6fcaa01447dd0661631a56",
+                "MacAddress": "3a:43:d7:36:0e:e4",
+                "IPv4Address": "172.18.0.3/16",
+                "IPv6Address": ""
+            }
+        },
+        "Status": {
+            "IPAM": {
+                "Subnets": {
+                    "172.18.0.0/16": {
+                        "IPsInUse": 5,
+                        "DynamicIPsAvailable": 65531
+                    }
+                }
+            }
+        }
+    }
+]
+adminsys@servidor-grupo7:~$ docker exec -it alpine-pruebas sh
+/ # ping -c 4 nginx-red
+PING nginx-red (172.18.0.2): 56 data bytes
+64 bytes from 172.18.0.2: seq=0 ttl=64 time=0.209 ms
+64 bytes from 172.18.0.2: seq=1 ttl=64 time=0.047 ms
+64 bytes from 172.18.0.2: seq=2 ttl=64 time=0.056 ms
+64 bytes from 172.18.0.2: seq=3 ttl=64 time=0.057 ms
+
+--- nginx-red ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 0.047/0.092/0.209 ms
+/ # exit
+adminsys@servidor-grupo7:~$ docker stop alpine-pruebas
+alpine-pruebas
