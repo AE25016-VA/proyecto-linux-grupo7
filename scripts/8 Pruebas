@@ -79,3 +79,61 @@ round-trip min/avg/max = 0.047/0.092/0.209 ms
 / # exit
 adminsys@servidor-grupo7:~$ docker stop alpine-pruebas
 alpine-pruebas
+
+
+adminsys@servidor-grupo7:/var/log/proyecto$ sudo crontab -l
+# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+*/30 * * * * /proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1
+adminsys@servidor-grupo7:/var/log/proyecto$ sudo grep CRON /var/log/syslog | grep reporte_sistema | tail
+2026-10-30T07:00:01.337290+00:00 servidor-grupo7 CRON[212624]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T07:30:01.436259+00:00 servidor-grupo7 CRON[213561]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T08:00:01.552397+00:00 servidor-grupo7 CRON[214426]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T08:30:01.663359+00:00 servidor-grupo7 CRON[214842]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T09:00:01.840497+00:00 servidor-grupo7 CRON[214913]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T09:30:01.968683+00:00 servidor-grupo7 CRON[214990]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T10:00:01.105240+00:00 servidor-grupo7 CRON[215081]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T10:30:01.220117+00:00 servidor-grupo7 CRON[215192]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T11:00:01.301229+00:00 servidor-grupo7 CRON[215288]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+2026-10-30T11:30:01.392263+00:00 servidor-grupo7 CRON[215734]: (root) CMD (/proyecto/scripts/reporte_sistema.sh >> /var/log/proyecto/reporte_sistema.log 2>&1)
+adminsys@servidor-grupo7:/var/log/proyecto$ docker ps -a
+CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS                        PORTS                                     NAMES
+f833b8553c72   alpine            "sh -c 'while true; …"   38 minutes ago   Exited (137) 29 minutes ago                                             alpine-pruebas
+254647bbc7ec   nginx             "/docker-entrypoint.…"   25 hours ago     Up 25 hours                   0.0.0.0:8083->80/tcp, [::]:8083->80/tcp   nginx-volumen-nuevo
+e92aa857a172   nginx             "/docker-entrypoint.…"   26 hours ago     Up 26 hours                   0.0.0.0:8082->80/tcp, [::]:8082->80/tcp   nginx-red
+2eaba7277e98   servidor-grupo7   "/docker-entrypoint.…"   30 hours ago     Up 30 hours                   0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   nginx-personalizado
+1bcd1ded0303   nginx:latest      "/docker-entrypoint.…"   31 hours ago     Up 31 hours                   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   nginx-basico
+48cb8d9a7182   hello-world       "/hello"                 9 days ago       Exited (0) 9 days ago                                                   hardcore_thompson
+adminsys@servidor-grupo7:/var/log/proyecto$ for puerto in 8080 8083; do
+    codigo=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://localhost:$puerto)
+    echo "Puerto $puerto: HTTP $codigo"
+done
+Puerto 8080: HTTP 200
+Puerto 8083: HTTP 200
+adminsys@servidor-grupo7:/var/log/proyecto$ for puerto in 8080 8081 8082 8083; do     codigo=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://localhost:$puerto);     echo "Puerto $puerto: HTTP $codigo"; done
+Puerto 8080: HTTP 200
+Puerto 8081: HTTP 200
+Puerto 8082: HTTP 200
+Puerto 8083: HTTP 200
+adminsys@servidor-grupo7:/var/log/proyecto$ 
